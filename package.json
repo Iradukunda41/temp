@@ -1,0 +1,12 @@
+{
+  "name": "temp",
+  "version": "1.0.0",
+  "description": "temp (ubushyuhe in Kinyarwanda): a weather tool for your terminal",
+  "type": "module",
+  "bin": {
+    "temp": "./bin/temp.js"
+  },
+  "scripts": {
+    "start": "node bin/temp.js"
+  }
+}
