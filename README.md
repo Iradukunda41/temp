@@ -161,17 +161,17 @@ temp/
 
 ## How it works (walkthrough)
 
-**1. Package setup.** `package.json` has a `bin` field that maps the command `temp` to `bin/temp.js`. The first line of that file, `#!/usr/bin/env node`, tells the operating system to run the file with Node. `"type": "module"` lets me use `import`. `npm link` creates a global shortcut to my folder, so I can type `temp` anywhere.
+1. **Package setup.** The `bin` field in `package.json` ... The first line `#!/usr/bin/env node` ... I ran `npm link` so that ...
 
-**2. Reading the input.** `util.parseArgs` splits what the user types into positional words (`weather`, `Kigali`) and flags (`--units`). The first word is the command and the rest is the city, joined with spaces so "New York" works. If the input is bad, the `fail()` function prints a message with `console.error` and calls `process.exit(1)`.
+2. **Reading the input.** `util.parseArgs` ... The first word is the ... and the rest is ...
 
-**3. Two chained requests.** The forecast service needs a latitude and longitude, but the user only gives a city name. So `getCoordinates` first asks the geocoding API for the city's coordinates, and only then `getForecast` asks for the current weather at those coordinates. `await` pauses the function until each network request finishes, so the second request can use the result of the first. Both go through one helper, `fetchJson`.
+3. **Two requests.** First I call the geocoding API to get ... Then I call the forecast API with ... I use `await` because ...
 
-**4. Error handling.** `fetchJson` wraps `fetch` in `try/catch`. `AbortSignal.timeout` cancels a request that takes too long, which gives a `TimeoutError`. Any other failure from `fetch` means the service could not be reached. A response with `response.ok` false means the service returned an error. All of these become an `ApiError` with a friendly message. In `bin/temp.js`, one `try/catch` turns `ApiError` and `StorageError` into a message with exit code 1. Any other error is a bug in my code, so I rethrow it instead of hiding it.
+4. **Errors.** If the internet is off, ... If the request is too slow, ... If the city does not exist, ... All of them exit with code ... because ...
 
-**5. Saving data.** `os.homedir()` and `path.join()` build the path to `~/.temp-cli/data.json` for any operating system. `fs/promises` provides `mkdir` (with `recursive: true`), `readFile` and `writeFile`. If the file does not exist yet (`ENOENT`), I start with empty data. If it exists but the JSON is broken, I show a `StorageError` instead of erasing it. After each successful lookup I add an entry to `history` and keep only the last 20.
+5. **Saving data.** I save favourites and history in a file called ... It is stored in the folder ... If the file does not exist yet, ...
 
-**6. Configuration.** `process.env` holds the environment variables. The units are chosen in this order: the `--units` flag, then `TEMP_UNITS`, then `celsius`. `TEMP_DATA_DIR` changes the data folder and `TEMP_TIMEOUT_MS` changes the timeout.
+6. **Configuration.** The units come from the flag first, then ..., then ... I read environment variables with ...
 
 ## Data source
 
