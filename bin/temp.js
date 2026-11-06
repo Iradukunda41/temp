@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { parseArgs } from "node:util";
+import { getCoordinates, getForecast } from "../src/api.js";
 
 const HELP = `temp (ubushyuhe) - a weather tool for your terminal
 
@@ -48,7 +49,11 @@ switch (command) {
   case "weather": {
     const city = rest.join(" ");
     if (!city) fail("please give a city, for example: temp weather Kigali");
-    console.log(`(coming soon) weather for ${city} in ${values.units}`);
+    const place = await getCoordinates(city);
+    if (!place) fail(`could not find a city called "${city}".`);
+    const forecast = await getForecast(place.latitude, place.longitude, values.units);
+    console.log(place.name, place.country);
+    console.log(forecast.current);
     break;
   }
   case "fav":
