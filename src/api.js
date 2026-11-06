@@ -1,12 +1,13 @@
 const GEO_URL = "https://geocoding-api.open-meteo.com/v1/search";
 const FORECAST_URL = "https://api.open-meteo.com/v1/forecast";
+const TIMEOUT_MS = Number(process.env.TEMP_TIMEOUT_MS) || 10000;
 
 export class ApiError extends Error {}
 
 async function fetchJson(url) {
   let response;
   try {
-    response = await fetch(url, { signal: AbortSignal.timeout(10000) });
+    response = await fetch(url, { signal: AbortSignal.timeout(TIMEOUT_MS) });
   } catch (err) {
     if (err.name === "TimeoutError") {
       throw new ApiError("the request timed out. Please try again.");

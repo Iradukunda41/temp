@@ -2,7 +2,7 @@ import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { homedir } from "node:os";
 import path from "node:path";
 
-const DATA_DIR = path.join(homedir(), ".temp-cli");
+const DATA_DIR = process.env.TEMP_DATA_DIR ?? path.join(homedir(), ".temp-cli");
 const DATA_FILE = path.join(DATA_DIR, "data.json");
 
 export class StorageError extends Error {}

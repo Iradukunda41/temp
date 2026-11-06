@@ -15,7 +15,12 @@ Usage:
 
 Options:
   -u, --units   celsius or fahrenheit (default: celsius)
-  -h, --help    show this help`;
+  -h, --help    show this help
+
+Environment variables:
+  TEMP_UNITS        default units (celsius or fahrenheit)
+  TEMP_DATA_DIR     folder for the data file (default: ~/.temp-cli)
+  TEMP_TIMEOUT_MS   request timeout in milliseconds (default: 10000)`;
 
 function fail(message) {
   console.error(`Error: ${message}`);
@@ -29,7 +34,7 @@ try {
     allowPositionals: true,
     options: {
       help: { type: "boolean", short: "h" },
-      units: { type: "string", short: "u", default: "celsius" },
+      units: { type: "string", short: "u" },
     },
   });
 } catch (err) {
@@ -38,14 +43,15 @@ try {
 
 const { values, positionals } = parsed;
 const [command, ...rest] = positionals;
+const units = values.units ?? process.env.TEMP_UNITS ?? "celsius";
 
 if (values.help) {
   console.log(HELP);
   process.exit(0);
 }
 
-if (!["celsius", "fahrenheit"].includes(values.units)) {
-  fail(`units must be "celsius" or "fahrenheit", not "${values.units}".`);
+if (!["celsius", "fahrenheit"].includes(units)) {
+  fail(`units must be "celsius" or "fahrenheit", not "${units}".`);
 }
 
 try {
@@ -55,15 +61,15 @@ try {
       if (!city) fail("please give a city, for example: temp weather Kigali");
       const place = await getCoordinates(city);
       if (!place) fail(`could not find a city called "${city}".`);
-      const forecast = await getForecast(place.latitude, place.longitude, values.units);
-      console.log(formatWeather(place, forecast.current, values.units));
+      const forecast = await getForecast(place.latitude, place.longitude, units);
+      console.log(formatWeather(place, forecast.current, units));
 
       const data = await loadData();
       data.history.push({
         city: place.name,
         country: place.country,
         temperature: forecast.current.temperature_2m,
-        units: values.units,
+        units,
         time: new Date().toISOString(),
       });
       data.history = data.history.slice(-20);
