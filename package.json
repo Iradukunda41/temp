@@ -8,5 +8,12 @@
   },
   "scripts": {
     "start": "node bin/temp.js"
-  }
+  },
+  "files": ["bin", "src"],
+  "keywords": ["cli", "weather", "node", "open-meteo"],
+  "engines": {
+    "node": ">=18"
+  },
+  "author": "Iradukunda Flora",
+  "license": "MIT"
 }
