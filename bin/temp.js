@@ -4,7 +4,7 @@ import { getCoordinates, getForecast, ApiError } from "../src/api.js";
 import { formatWeather } from "../src/format.js";
 import { loadData, saveData, StorageError } from "../src/storage.js";
 
-const HELP = `temp (ubushyuhe) - a weather tool for your terminal
+const HELP = `temp - a weather tool for your terminal
 
 Usage:
   temp weather <city> [--units celsius|fahrenheit]
